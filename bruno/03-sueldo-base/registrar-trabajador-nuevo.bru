@@ -1,0 +1,34 @@
+meta {
+  name: Registrar trabajador nuevo
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/auth/registro
+  body: json
+  auth: none
+}
+
+script:pre-request {
+  bru.setEnvVar("correoTrabajadorNuevo", `trabajador-${Date.now()}@tecnm.mx`);
+}
+
+body:json {
+  {
+    "correo": "{{correoTrabajadorNuevo}}",
+    "contrasena": "{{contrasena}}",
+    "tipoUsuario": "trabajador"
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body.tieneSueldoBase: eq false
+}
+
+docs {
+  Un trabajador recien dado de alta nace SIN sueldo base: capturarlo es su
+  propio caso de uso (CU-B01). Se crea uno nuevo en cada ejecucion para que
+  "Capturar sueldo base" sea repetible.
+}

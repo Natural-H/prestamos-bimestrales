@@ -1,0 +1,29 @@
+meta {
+  name: Sueldo base en cero
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/trabajadores/me/sueldo-base
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenSinSueldo}}
+}
+
+body:json {
+  {
+    "sueldoBaseEnPesos": "0.00"
+  }
+}
+
+assert {
+  res.status: eq 422
+}
+
+docs {
+  EC-19. Cero no es un sueldo, es la ausencia de uno.
+}

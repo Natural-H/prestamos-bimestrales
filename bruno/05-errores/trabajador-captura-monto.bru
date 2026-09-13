@@ -1,0 +1,33 @@
+meta {
+  name: Trabajador captura monto
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/solicitudes/bimestres
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenTrabajador}}
+}
+
+body:json {
+  {
+    "bimestres": [
+      { "mesReferencia": 10, "montoEnPesos": "1975.31" }
+    ]
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.codigo: eq MONTO_NO_CAPTURABLE
+}
+
+docs {
+  EC-05. Se rechaza aunque el monto coincida con el calculado: el monto
+  nunca puede depender de un valor que controla quien llama.
+}

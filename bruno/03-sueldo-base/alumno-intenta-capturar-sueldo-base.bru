@@ -1,0 +1,29 @@
+meta {
+  name: Alumno intenta capturar sueldo base
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/trabajadores/me/sueldo-base
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenAlumno}}
+}
+
+body:json {
+  {
+    "sueldoBaseEnPesos": "10000.00"
+  }
+}
+
+assert {
+  res.status: eq 403
+}
+
+docs {
+  El sueldo base solo existe en el modelo del trabajador (RN-13).
+}

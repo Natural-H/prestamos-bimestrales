@@ -1,0 +1,33 @@
+meta {
+  name: Capturar sueldo base
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/trabajadores/me/sueldo-base
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenTrabajadorNuevo}}
+}
+
+body:json {
+  {
+    "sueldoBaseEnPesos": "10000.00"
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body.sueldoBaseEnPesos: eq "10000.00"
+}
+
+docs {
+  CU-B01. Precondicion dura de todo calculo (EC-06): sin sueldo base, el
+  trabajador no puede solicitar nada.
+  Repetir esta peticion sobre el mismo usuario devuelve 409
+  SUELDO_BASE_YA_REGISTRADO: cambiarlo es CU-B02, otro caso de uso.
+}

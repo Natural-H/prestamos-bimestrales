@@ -1,0 +1,30 @@
+meta {
+  name: Login trabajador sin sueldo
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "correo": "{{correoTrabajadorSinSueldo}}",
+    "contrasena": "{{contrasena}}"
+  }
+}
+
+script:post-response {
+  bru.setEnvVar("tokenSinSueldo", res.body.token);
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  CU-A02. Este usuario existe para provocar EC-06 (SUELDO_BASE_NO_REGISTRADO).
+}

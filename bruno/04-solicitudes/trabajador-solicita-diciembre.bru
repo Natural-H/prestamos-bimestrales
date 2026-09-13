@@ -1,0 +1,24 @@
+meta {
+  name: Trabajador solicita diciembre
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/solicitudes/diciembre
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenTrabajador}}
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  CU-D03. Sin cuerpo: el monto es el 32% del sueldo vigente (RN-10).
+  No le afecta el cierre de octubre (RN-11).
+}

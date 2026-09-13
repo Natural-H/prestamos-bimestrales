@@ -1,0 +1,26 @@
+meta {
+  name: Login trabajador nuevo
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "correo": "{{correoTrabajadorNuevo}}",
+    "contrasena": "{{contrasena}}"
+  }
+}
+
+script:post-response {
+  bru.setEnvVar("tokenTrabajadorNuevo", res.body.token);
+}
+
+assert {
+  res.status: eq 200
+}

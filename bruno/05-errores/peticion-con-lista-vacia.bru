@@ -1,0 +1,30 @@
+meta {
+  name: Peticion con lista vacia
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/solicitudes/bimestres
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenAlumno}}
+}
+
+body:json {
+  {
+    "bimestres": []
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.codigo: eq PETICION_INVALIDA
+}
+
+docs {
+  EC-14. Validacion de forma del ValidationPipe, no del dominio.
+}

@@ -1,0 +1,25 @@
+meta {
+  name: Consultar mi solicitud
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/solicitudes/me
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenTrabajador}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.totalEnPesos: isDefined
+}
+
+docs {
+  CU-D04. Para el trabajador los montos se derivan del sueldo VIGENTE, asi
+  que el total cambia si actualizo su sueldo entre dos consultas (RN-13).
+}

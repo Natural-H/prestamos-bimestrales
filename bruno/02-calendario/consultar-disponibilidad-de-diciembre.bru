@@ -1,0 +1,25 @@
+meta {
+  name: Consultar disponibilidad de diciembre
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/diciembre
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenTrabajador}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.clave: isDefined
+}
+
+docs {
+  CU-C03. Diciembre no es un bimestre y tiene plazo propio hasta el 31 de
+  diciembre (RN-11). El monto es el 32% del sueldo vigente (RN-10).
+}

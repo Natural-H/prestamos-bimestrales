@@ -1,0 +1,32 @@
+meta {
+  name: Alumno sin indicar monto
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/solicitudes/bimestres
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenAlumno}}
+}
+
+body:json {
+  {
+    "bimestres": [
+      { "mesReferencia": 10 }
+    ]
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.codigo: eq MONTO_REQUERIDO
+}
+
+docs {
+  EC-18. El alumno elige el monto; no hay valor por defecto que suponer.
+}

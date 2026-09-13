@@ -1,0 +1,35 @@
+meta {
+  name: Trabajador sin sueldo base
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/solicitudes/bimestres
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenSinSueldo}}
+}
+
+body:json {
+  {
+    "bimestres": [
+      { "mesReferencia": 10 }
+    ]
+  }
+}
+
+assert {
+  res.status: eq 409
+  res.body.codigo: eq SUELDO_BASE_NO_REGISTRADO
+}
+
+docs {
+  EC-06. Usa el usuario trabajador-sin-sueldo@tecnm.mx del seed, que existe
+  exactamente para esto: NO le captures sueldo base nunca, o este escenario
+  dejara de reproducirse. "Capturar sueldo base" (03) usa un trabajador nuevo
+  creado en cada ejecucion, precisamente para no gastar este.
+}

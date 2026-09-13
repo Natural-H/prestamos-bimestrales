@@ -1,0 +1,23 @@
+meta {
+  name: Alumno solicita diciembre
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/solicitudes/diciembre
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenAlumno}}
+}
+
+assert {
+  res.status: eq 403
+}
+
+docs {
+  EC-07. RN-12: los alumnos no reciben nada en diciembre.
+}

@@ -1,0 +1,24 @@
+meta {
+  name: Alumno consulta diciembre
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/diciembre
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenAlumno}}
+}
+
+assert {
+  res.status: eq 403
+  res.body.codigo: eq NO_AUTORIZADO
+}
+
+docs {
+  EC-07. Los alumnos no reciben nada en diciembre (RN-12).
+}

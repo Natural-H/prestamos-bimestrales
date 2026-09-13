@@ -1,0 +1,32 @@
+meta {
+  name: Actualizar sueldo base con recalculo
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/trabajadores/me/sueldo-base
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenTrabajador}}
+}
+
+body:json {
+  {
+    "sueldoBaseEnPesos": "20000.00"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.sueldoBaseEnPesos: eq "20000.00"
+}
+
+docs {
+  CU-B02. Tras esta peticion, GET /solicitudes/me devuelve montos nuevos
+  SIN que se haya reescrito ningun periodo: el monto del trabajador se
+  deriva del sueldo vigente, no se almacena (RN-20).
+}

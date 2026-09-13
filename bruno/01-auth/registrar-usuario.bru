@@ -1,0 +1,35 @@
+meta {
+  name: Registrar usuario
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/auth/registro
+  body: json
+  auth: none
+}
+
+script:pre-request {
+  // Correo distinto en cada ejecucion: si fuera fijo, la coleccion solo pasaria
+  // la primera vez y despues devolveria 409 CORREO_YA_REGISTRADO.
+  bru.setEnvVar("correoNuevo", `alumno-${Date.now()}@tecnm.mx`);
+}
+
+body:json {
+  {
+    "correo": "{{correoNuevo}}",
+    "contrasena": "{{contrasena}}",
+    "tipoUsuario": "alumno"
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body.tipoUsuario: eq "alumno"
+}
+
+docs {
+  CU-A01. El rol se fija en el alta y es inmutable (RN-01).
+  Repetir el alta con el MISMO correo devuelve 409 CORREO_YA_REGISTRADO.
+}

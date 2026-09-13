@@ -1,0 +1,25 @@
+meta {
+  name: Perfil del usuario autenticado
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/me
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenTrabajador}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.tipoUsuario: eq trabajador
+  res.body.tieneDerechoADiciembre: eq true
+}
+
+docs {
+  CU-A03.
+}

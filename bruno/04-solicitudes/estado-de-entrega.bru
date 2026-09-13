@@ -1,0 +1,31 @@
+meta {
+  name: Estado de entrega
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/solicitudes/me/entregas
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenTrabajador}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.totalEntregadoEnPesos: isDefined
+  res.body.totalPorRecibirEnPesos: isDefined
+}
+
+docs {
+  CU-E01. El estado se DERIVA de la fecha (RN-07): no hay endpoint para
+  "marcar como entregado" porque el proceso de desembolso esta fuera del
+  alcance del microservicio (RN-16, decision D-05).
+
+  Los totales usan los montos VIGENTES, asi que el total entregado de un
+  trabajador cambia si actualiza su sueldo: nada se congela al entregarse
+  (decision D-09).
+}

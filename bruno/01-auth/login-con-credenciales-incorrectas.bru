@@ -1,0 +1,28 @@
+meta {
+  name: Login con credenciales incorrectas
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "correo": "{{correoAlumno}}",
+    "contrasena": "contrasena-equivocada"
+  }
+}
+
+assert {
+  res.status: eq 401
+  res.body.codigo: eq CREDENCIALES_INVALIDAS
+}
+
+docs {
+  No distingue entre correo inexistente y contrasena incorrecta, para no
+  revelar qué correos están dados de alta.
+}

@@ -1,0 +1,41 @@
+meta {
+  name: Lote con un bimestre en conflicto
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/solicitudes/bimestres
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenAlumno}}
+}
+
+body:json {
+  {
+    "bimestres": [
+      { "mesReferencia": 8, "montoEnPesos": "99999.00" },
+      { "mesReferencia": 10, "montoEnPesos": "500.00" }
+    ]
+  }
+}
+
+assert {
+  res.status: eq 422
+  res.body.codigo: eq MONTO_EXCEDE_LIMITE
+}
+
+docs {
+  EC-12. Atomicidad: si CUALQUIER periodo del request choca, se rechaza el
+  request completo y no se persiste ninguno (RN-18).
+
+  El periodo invalido va el primero a proposito, para que el resultado sea el
+  mismo sin importar en que fecha del ano se ejecute la coleccion ni que
+  tenga ya solicitado el alumno.
+
+  Comprueba despues con GET /solicitudes/me que el bimestre 10 NO se agrego,
+  aunque por si solo fuera valido.
+}

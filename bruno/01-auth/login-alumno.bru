@@ -1,0 +1,30 @@
+meta {
+  name: Login alumno
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "correo": "{{correoAlumno}}",
+    "contrasena": "{{contrasena}}"
+  }
+}
+
+script:post-response {
+  bru.setEnvVar("tokenAlumno", res.body.token);
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  CU-A02.
+}

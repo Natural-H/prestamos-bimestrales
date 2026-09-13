@@ -1,0 +1,28 @@
+meta {
+  name: Desglose por periodo
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/solicitudes/me/periodos
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenTrabajador}}
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  CU-D05. Pone juntas las dos fechas que conviene no confundir (RN-07):
+
+  - fechaSolicitud: cuando lo pidio el usuario, que puede ser con meses de
+    antelacion (RN-03);
+  - inicio y fin: cuando le corresponde RECIBIRLO, que no se adelanta por
+    haberlo pedido antes.
+}

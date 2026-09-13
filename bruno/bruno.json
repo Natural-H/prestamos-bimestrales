@@ -1,0 +1,6 @@
+{
+  "version": "1",
+  "name": "prestamos-bimestrales",
+  "type": "collection",
+  "ignore": ["node_modules", ".git"]
+}

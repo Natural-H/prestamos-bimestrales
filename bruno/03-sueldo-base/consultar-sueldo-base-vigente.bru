@@ -1,0 +1,23 @@
+meta {
+  name: Consultar sueldo base vigente
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/trabajadores/me/sueldo-base
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenTrabajador}}
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  CU-B03.
+}

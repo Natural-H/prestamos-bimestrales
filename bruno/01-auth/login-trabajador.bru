@@ -1,0 +1,32 @@
+meta {
+  name: Login trabajador
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "correo": "{{correoTrabajador}}",
+    "contrasena": "{{contrasena}}"
+  }
+}
+
+script:post-response {
+  bru.setEnvVar("tokenTrabajador", res.body.token);
+}
+
+assert {
+  res.status: eq 200
+  res.body.token: isDefined
+}
+
+docs {
+  CU-A02. Emite el JWT con identificador y rol (RN-17).
+  Guarda el token en la variable tokenTrabajador para el resto de peticiones.
+}

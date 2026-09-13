@@ -1,0 +1,33 @@
+meta {
+  name: Mes que no es bimestre
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/solicitudes/bimestres
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenAlumno}}
+}
+
+body:json {
+  {
+    "bimestres": [
+      { "mesReferencia": 3, "montoEnPesos": "100.00" }
+    ]
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.codigo: eq BIMESTRE_INEXISTENTE
+}
+
+docs {
+  EC-09. Marzo pasa la validacion de forma del DTO a proposito: cuales son
+  bimestres es una regla de negocio y la decide el dominio (RN-02).
+}

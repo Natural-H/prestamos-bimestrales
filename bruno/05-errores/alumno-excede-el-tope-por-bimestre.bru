@@ -1,0 +1,32 @@
+meta {
+  name: Alumno excede el tope por bimestre
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/solicitudes/bimestres
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenAlumno}}
+}
+
+body:json {
+  {
+    "bimestres": [
+      { "mesReferencia": 10, "montoEnPesos": "3500.01" }
+    ]
+  }
+}
+
+assert {
+  res.status: eq 422
+  res.body.codigo: eq MONTO_EXCEDE_LIMITE
+}
+
+docs {
+  EC-03.
+}

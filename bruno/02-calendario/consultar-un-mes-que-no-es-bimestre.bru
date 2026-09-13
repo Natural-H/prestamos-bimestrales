@@ -1,0 +1,25 @@
+meta {
+  name: Consultar un mes que no es bimestre
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/bimestres/3
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenTrabajador}}
+}
+
+assert {
+  res.status: eq 400
+  res.body.codigo: eq BIMESTRE_INEXISTENTE
+}
+
+docs {
+  RN-02. Marzo no es un bimestre. Prueba tambien con 12: diciembre existe, pero
+  NO es un bimestre (RN-11); tiene su propio endpoint GET /diciembre.
+}

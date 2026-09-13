@@ -1,0 +1,30 @@
+meta {
+  name: Consultar un bimestre
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/bimestres/10
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenTrabajador}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.clave: isDefined
+  res.body.mesReferencia: eq 10
+}
+
+docs {
+  CU-C02. Consulta sin efectos: permite comprobar si el bimestre sigue
+  disponible y cuanto costaria ANTES de solicitarlo, en vez de intentarlo y
+  ver si falla.
+
+  Para el trabajador el monto es el 16% de su sueldo vigente (RN-08); para el
+  alumno es null, porque lo elige el (RN-09).
+}

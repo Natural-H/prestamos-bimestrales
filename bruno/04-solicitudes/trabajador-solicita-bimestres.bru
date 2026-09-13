@@ -1,0 +1,34 @@
+meta {
+  name: Trabajador solicita bimestres
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/solicitudes/bimestres
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenTrabajador}}
+}
+
+body:json {
+  {
+    "bimestres": [
+      { "mesReferencia": 10 }
+    ]
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.solicitud.periodos[0].montoEnPesos: isDefined
+}
+
+docs {
+  CU-D02. El trabajador NO manda monto: lo calcula el sistema como el 16%
+  del sueldo base vigente (RN-08). Responde 200 y no 201 porque es un
+  upsert acumulativo idempotente sobre el registro del ano (RN-06, RN-18).
+}

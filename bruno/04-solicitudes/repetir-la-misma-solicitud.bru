@@ -1,0 +1,33 @@
+meta {
+  name: Repetir la misma solicitud
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/solicitudes/bimestres
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenTrabajador}}
+}
+
+body:json {
+  {
+    "bimestres": [
+      { "mesReferencia": 10 }
+    ]
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.agregados.length: eq 0
+  res.body.sinCambios.length: eq 1
+}
+
+docs {
+  EC-10. Idempotencia: no duplica, no falla y no vuelve a escribir.
+}

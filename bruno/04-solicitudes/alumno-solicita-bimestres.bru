@@ -1,0 +1,33 @@
+meta {
+  name: Alumno solicita bimestres
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/solicitudes/bimestres
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenAlumno}}
+}
+
+body:json {
+  {
+    "bimestres": [
+      { "mesReferencia": 10, "montoEnPesos": "3500.00" }
+    ]
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.solicitud.periodos[0].montoEnPesos: eq "3500.00"
+}
+
+docs {
+  CU-D01. El alumno elige el monto entre 0.01 y 3500.00 POR BIMESTRE
+  (RN-09): el tope no es acumulado, cinco bimestres al tope son validos.
+}

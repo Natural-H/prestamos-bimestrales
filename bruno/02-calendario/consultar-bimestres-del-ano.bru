@@ -1,0 +1,26 @@
+meta {
+  name: Consultar bimestres del ano
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/bimestres
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{tokenTrabajador}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.bimestres.length: eq 5
+}
+
+docs {
+  CU-C01. Devuelve los cinco bimestres SIEMPRE (RN-02), cada uno marcado
+  como DISPONIBLE o BLOQUEADO segun la fecha (RN-04), mas la bandera
+  temporadaCerrada (RN-05, CU-C04).
+}
