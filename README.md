@@ -5,6 +5,8 @@ solicitan préstamos asociados a los bimestres del año.
 
 - **Requisitos funcionales:** [`docs/planteamiento.md`](docs/planteamiento.md) — fuente de verdad.
 - **Catálogo de casos de uso y decisiones cerradas:** [`docs/casos-de-uso.md`](docs/casos-de-uso.md).
+- **Vista de arquitectura:** [`docs/arquitectura.md`](docs/arquitectura.md) — capas, puertos y
+  adaptadores, modelo de dominio, flujo de una petición y dónde vive cada regla.
 - **Reglas de arquitectura y convenciones:** [`CLAUDE.md`](CLAUDE.md).
 
 ## Puesta en marcha
