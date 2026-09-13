@@ -1,0 +1,30 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: prestamos-bimestrales-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-prestamos}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-prestamos}
+      POSTGRES_DB: ${DB_NAME:-prestamos_bimestrales}
+      # La base se crea en la zona del TECNM para que los timestamptz se lean
+      # igual desde psql que desde la API (RN-04).
+      TZ: America/Mexico_City
+    ports:
+      - '${DB_PORT:-5432}:5432'
+    volumes:
+      # PostgreSQL 18 recomienda montar /var/lib/postgresql (no .../data): la
+      # imagen coloca los datos en un subdirectorio por versión mayor, lo que
+      # permite actualizar con "pg_upgrade --link" sin cruzar puntos de montaje.
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      # Las migraciones y la API no deben arrancar contra una base a medio
+      # levantar: el healthcheck es lo que permite esperarla.
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-prestamos} -d ${DB_NAME:-prestamos_bimestrales}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  postgres-data:
