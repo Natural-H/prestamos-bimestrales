@@ -33,8 +33,8 @@ npm run start:dev           # API en http://localhost:3000
 ## Comandos
 
 ```bash
-npm test          # 197 pruebas unitarias de dominio, aplicación y presentación (sin BD)
-npm run test:int  # 6 pruebas de integración contra PostgreSQL (requiere db:up + migration:run)
+npm test          # 226 pruebas unitarias de las cuatro capas (sin base de datos)
+npm run test:int  # 14 pruebas de integración contra PostgreSQL (requiere db:up + migration:run)
 npm run test:cov  # Cobertura
 npm run lint      # ESLint: incluye la regla de dependencias de Clean Architecture
 npm run format    # Prettier
@@ -57,6 +57,12 @@ Postgres** y que un doble en memoria no puede demostrar, y para eso está `npm r
 2. **El mapeo entre las filas y el agregado**: que el `numeric` vuelva como cadena sin perder
    precisión (RN-14) y que diciembre se reconstruya como su propio value object y no como un
    bimestre (RN-11).
+3. **Las restricciones de la migración**: que el `CHECK` de sueldo positivo y el enum de tipo
+   de usuario existan de verdad en la base, y no sólo en la entidad de TypeORM.
+
+Los adaptadores que no necesitan base de datos —scrypt, la emisión y verificación del JWT, la
+validación de la configuración de entorno, el mapper ORM— se prueban en la suite unitaria con
+dobles, así que `npm test` cubre también infraestructura.
 
 ### Pruebas de API (Bruno)
 

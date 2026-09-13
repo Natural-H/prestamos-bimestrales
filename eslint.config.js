@@ -22,6 +22,15 @@ module.exports = tseslint.config(
         tsconfigRootDir: __dirname,
       },
     },
+    rules: {
+      // `const { PORT, ...resto } = config` es la forma idiomatica de omitir
+      // claves de un objeto; sin esto, la variable omitida cuenta como sin usar.
+      // Es ademas el valor por defecto de la regla base de ESLint.
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { ignoreRestSiblings: true, argsIgnorePattern: '^_' },
+      ],
+    },
   },
 
   /*

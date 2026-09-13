@@ -14,6 +14,16 @@ module.exports = {
   // Las de integración van aparte (jest.integration.config.js): necesitan Postgres.
   testPathIgnorePatterns: ['\\.int-spec\\.ts$'],
   moduleFileExtensions: ['ts', 'js', 'json'],
-  collectCoverageFrom: ['src/domain/**/*.ts', 'src/application/**/*.ts'],
+  collectCoverageFrom: [
+    'src/domain/**/*.ts',
+    'src/application/**/*.ts',
+    'src/infrastructure/**/*.ts',
+    // Se excluye lo que no tiene logica que probar o que solo se ejercita
+    // levantando el servicio: declaraciones de esquema, migraciones y scripts.
+    '!src/infrastructure/persistence/typeorm/entities/**',
+    '!src/infrastructure/persistence/typeorm/migrations/**',
+    '!src/infrastructure/persistence/typeorm/seed.ts',
+    '!src/infrastructure/config/data-source.ts',
+  ],
   coverageDirectory: 'coverage',
 };

@@ -54,7 +54,9 @@ describe('SolicitudPrestamoRepositoryImpl (integración)', () => {
   const solicitantesCreados: string[] = [];
 
   beforeAll(async () => {
-    dataSource = await new DataSource(opcionesDeConexion()).initialize();
+    // Sin logging: varias pruebas provocan errores de la base a proposito y
+    // su rastro en consola solo estorba.
+    dataSource = await new DataSource({ ...opcionesDeConexion(), logging: false }).initialize();
     // El adaptador sólo necesita el DataSource; se construye a mano porque estas
     // pruebas no levantan NestJS.
     repositorio = new SolicitudPrestamoRepositoryImpl(dataSource);
