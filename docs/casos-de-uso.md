@@ -6,7 +6,7 @@ _Primer entregable (CLAUDE.md §13). Documento de análisis previo a cualquier l
 > Este catálogo **no introduce reglas de negocio nuevas**. Lo que queda sin cubrir se marca como `PENDIENTE` y se recoge en la §8.
 > **Alcance:** solo API REST. No hay UI. Cada "pantalla" del planteamiento se materializa como endpoint HTTP.
 
-**Estado:** **catálogo cerrado e implementado**. Los 20 casos de uso del catálogo están construidos y probados, salvo los que las decisiones de la §7 dejaron fuera de alcance (CU-B04 historial de sueldos, CU-D06 cancelación, y los tres casos de escritura de desembolso, sustituidos por la consulta derivada CU-E01). Ver `README.md` para el estado por capa.
+**Estado:** **catálogo cerrado e implementado**. Los **16 casos de uso** que quedaron tras las decisiones de la §7 están construidos y probados, mediante **14 handlers** —`SolicitarBimestres` sirve a CU-D01 y CU-D02, y `ListarBimestres` a CU-C01 y CU-C04—. Quedaron fuera de alcance (CU-B04 historial de sueldos, CU-D06 cancelación, y los tres casos de escritura de desembolso, sustituidos por la consulta derivada CU-E01). Ver `README.md` para el estado por capa.
 
 **Estado del catálogo:** Las 12 dudas iniciales (D-01…D-12) y las 2 derivadas (P-01, P-02) están resueltas con el usuario; ver el registro de decisiones en la §7. No quedan supuestos pendientes: el modelado puede comenzar.
 

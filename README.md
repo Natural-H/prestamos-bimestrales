@@ -5,8 +5,12 @@ solicitan préstamos asociados a los bimestres del año.
 
 - **Requisitos funcionales:** [`docs/planteamiento.md`](docs/planteamiento.md) — fuente de verdad.
 - **Catálogo de casos de uso y decisiones cerradas:** [`docs/casos-de-uso.md`](docs/casos-de-uso.md).
+- **Memoria del proyecto:** [`docs/memoria.md`](docs/memoria.md) — por qué está hecho así, en
+  qué orden se construyó y qué problemas reales aparecieron.
 - **Vista de arquitectura:** [`docs/arquitectura.md`](docs/arquitectura.md) — capas, puertos y
   adaptadores, modelo de dominio, flujo de una petición y dónde vive cada regla.
+- **Guion de demostración:** [`docs/demo.md`](docs/demo.md) — cómo enseñar el sistema en cinco
+  minutos, con las respuestas reales de cada paso.
 - **Reglas de arquitectura y convenciones:** [`CLAUDE.md`](CLAUDE.md).
 
 ## Puesta en marcha
@@ -156,7 +160,7 @@ entero en [`src/app.module.ts`](src/app.module.ts).
 | Capa | Estado |
 |---|---|
 | Dominio | Completo |
-| Aplicación (CQRS) | 14 casos de uso: el catálogo completo salvo lo que está fuera de alcance |
+| Aplicación (CQRS) | 16 casos de uso en 14 handlers: el catálogo completo salvo lo fuera de alcance |
 | Infraestructura | PostgreSQL 18 + TypeORM con migraciones, JWT + scrypt, reloj, seed |
 | Presentación | 14 endpoints con DTOs validados, guards y filtro de errores |
 
