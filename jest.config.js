@@ -11,6 +11,8 @@ module.exports = {
   setupFiles: ['<rootDir>/test/setup.ts'],
   roots: ['<rootDir>/src', '<rootDir>/test'],
   testRegex: '.*\\.spec\\.ts$',
+  // Las de integración van aparte (jest.integration.config.js): necesitan Postgres.
+  testPathIgnorePatterns: ['\\.int-spec\\.ts$'],
   moduleFileExtensions: ['ts', 'js', 'json'],
   collectCoverageFrom: ['src/domain/**/*.ts', 'src/application/**/*.ts'],
   coverageDirectory: 'coverage',

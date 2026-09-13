@@ -21,7 +21,8 @@
     "migration:generate": "ts-node ./node_modules/typeorm/cli.js migration:generate -d src/infrastructure/config/data-source.ts",
     "seed": "ts-node src/infrastructure/persistence/typeorm/seed.ts",
     "db:up": "docker compose up -d",
-    "db:down": "docker compose down"
+    "db:down": "docker compose down",
+    "test:int": "jest --config jest.integration.config.js --runInBand"
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",

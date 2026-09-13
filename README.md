@@ -34,6 +34,7 @@ npm run start:dev           # API en http://localhost:3000
 
 ```bash
 npm test          # 197 pruebas unitarias de dominio, aplicación y presentación (sin BD)
+npm run test:int  # 6 pruebas de integración contra PostgreSQL (requiere db:up + migration:run)
 npm run test:cov  # Cobertura
 npm run lint      # ESLint: incluye la regla de dependencias de Clean Architecture
 npm run format    # Prettier
@@ -43,6 +44,19 @@ npm run db:down   # Lo apaga
 npm run migration:run / migration:revert / migration:generate
 npm run seed      # Datos de prueba (idempotente)
 ```
+
+### Pruebas de integración
+
+`npm test` no toca la base de datos a propósito: si una regla de negocio necesitara Postgres
+para probarse, estaría mal ubicada. Pero hay dos garantías que **sólo existen dentro de
+Postgres** y que un doble en memoria no puede demostrar, y para eso está `npm run test:int`:
+
+1. **El bloqueo optimista** (RN-15): dos operaciones simultáneas sobre el mismo registro no se
+   pisan. Una gana y la otra recibe `ConflictoDeConcurrenciaError` → `409`, en vez de
+   sobrescribir en silencio.
+2. **El mapeo entre las filas y el agregado**: que el `numeric` vuelva como cadena sin perder
+   precisión (RN-14) y que diciembre se reconstruya como su propio value object y no como un
+   bimestre (RN-11).
 
 ### Pruebas de API (Bruno)
 
