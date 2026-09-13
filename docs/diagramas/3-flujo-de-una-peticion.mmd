@@ -1,0 +1,34 @@
+sequenceDiagram
+    autonumber
+    actor U as Cliente
+    participant G as Guards
+    participant C as SolicitudesController
+    participant H as SolicitarBimestresHandler
+    participant L as CargadorDelRegistro
+    participant R as Repositorios
+    participant A as SolicitudPrestamo
+    participant P as PoliticaPrestamo
+
+    U->>G: POST + Bearer token
+    G->>G: verifica firma y rol
+    G->>C: request.user = id + tipoUsuario
+    C->>C: ValidationPipe valida FORMA del DTO
+    C->>H: SolicitarBimestresCommand
+    H->>L: cargar(solicitanteId)
+    L->>R: buscar solicitante y registro del año
+    R-->>L: Solicitante + SolicitudPrestamo
+    L-->>H: hoy + solicitante + solicitud
+    H->>P: solicitante.politicaPrestamo()
+    H->>A: agregar(periodos, politica, hoy)
+    A->>A: fase 1 · valida TODO el lote
+    A->>P: monto de cada periodo
+    A->>A: calendario · idempotencia · conflictos
+    A->>A: fase 2 · aplica, ya no puede fallar
+    A-->>H: agregados + sinCambios
+    alt se agregó algo
+        H->>R: guardar (transacción + bloqueo optimista)
+    else nada nuevo
+        Note over H,R: no se escribe: evita avanzar la versión<br/>y provocar conflictos artificiales
+    end
+    H-->>C: modelo de lectura
+    C-->>U: 200 + estado actual del registro

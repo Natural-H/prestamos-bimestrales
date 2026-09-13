@@ -22,7 +22,9 @@
     "seed": "ts-node src/infrastructure/persistence/typeorm/seed.ts",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
-    "test:int": "jest --config jest.integration.config.js --runInBand"
+    "test:int": "jest --config jest.integration.config.js --runInBand",
+    "docs:diagramas": "node scripts/generar-diagramas.js",
+    "respaldo": "node scripts/respaldo.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",

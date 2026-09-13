@@ -1,0 +1,40 @@
+flowchart LR
+    subgraph PRE["PRESENTACIÓN"]
+        CTRL["Controllers<br/>14 endpoints"]
+        DTO["DTOs + ValidationPipe<br/>sólo forma"]
+        GRD["JwtAuthGuard<br/>RolesGuard"]
+        FIL["DomainExceptionFilter<br/>dominio → HTTP"]
+    end
+
+    subgraph APP["APLICACIÓN"]
+        CMD["6 Commands<br/>+ handlers"]
+        QRY["8 Queries<br/>+ handlers"]
+        CARG["CargadorDelRegistro"]
+        RMOD["Read models<br/>+ mappers"]
+    end
+
+    subgraph DOM["DOMINIO"]
+        AGG["SolicitudPrestamo<br/>raíz del agregado"]
+        SOL["Solicitante"]
+        POL["PoliticaPrestamo<br/>alumno / trabajador"]
+        VOS["Value objects<br/>Monto · Bimestre"]
+        PTOS["PUERTOS<br/>ClockPort<br/>repositorios"]
+        ERRS["26 errores<br/>de dominio"]
+    end
+
+    subgraph INF["INFRAESTRUCTURA"]
+        REPO["Repositorios TypeORM<br/>+ mappers ORM"]
+        AUTH["JWT + scrypt"]
+        CLK["SystemClock"]
+        CFG["Config · migraciones"]
+    end
+
+    PRE ==>|"depende de"| APP
+    APP ==>|"depende de"| DOM
+    INF -.->|"implementan los puertos"| PTOS
+
+    style DOM fill:#e8f5e9,stroke:#2e7d32,stroke-width:4px
+    style PTOS fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+    style PRE fill:#e3f2fd,stroke:#1565c0
+    style APP fill:#fff8e1,stroke:#f9a825
+    style INF fill:#fce4ec,stroke:#c2185b

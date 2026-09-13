@@ -4,6 +4,10 @@ _Vista técnica del microservicio: capas, dependencias, dónde vive cada regla d
 qué. Complementa a [`planteamiento.md`](planteamiento.md) (qué hace el sistema) y a
 [`casos-de-uso.md`](casos-de-uso.md) (qué casos cubre)._
 
+> Los diagramas están **exportados a imagen** en [`diagramas/`](diagramas), para que se vean en
+> cualquier visor sin depender de un renderizador de Mermaid. Su fuente editable está junto a
+> cada imagen; si cambias un `.mmd`, regenera las imágenes con `npm run docs:diagramas`.
+
 ---
 
 ## 1. La idea en una frase
@@ -14,48 +18,9 @@ conectan por puertos.
 
 ## 2. Vista de capas y regla de dependencias
 
-```mermaid
-flowchart LR
-    subgraph PRE["PRESENTACIÓN"]
-        CTRL["Controllers<br/>14 endpoints"]
-        DTO["DTOs + ValidationPipe<br/>sólo forma"]
-        GRD["JwtAuthGuard<br/>RolesGuard"]
-        FIL["DomainExceptionFilter<br/>dominio → HTTP"]
-    end
+![Capas y regla de dependencias](diagramas/1-capas.png)
 
-    subgraph APP["APLICACIÓN"]
-        CMD["6 Commands<br/>+ handlers"]
-        QRY["8 Queries<br/>+ handlers"]
-        CARG["CargadorDelRegistro"]
-        RMOD["Read models<br/>+ mappers"]
-    end
-
-    subgraph DOM["DOMINIO"]
-        AGG["SolicitudPrestamo<br/>raíz del agregado"]
-        SOL["Solicitante"]
-        POL["PoliticaPrestamo<br/>alumno / trabajador"]
-        VOS["Value objects<br/>Monto · Bimestre"]
-        PTOS["PUERTOS<br/>ClockPort<br/>repositorios"]
-        ERRS["26 errores<br/>de dominio"]
-    end
-
-    subgraph INF["INFRAESTRUCTURA"]
-        REPO["Repositorios TypeORM<br/>+ mappers ORM"]
-        AUTH["JWT + scrypt"]
-        CLK["SystemClock"]
-        CFG["Config · migraciones"]
-    end
-
-    PRE ==>|"depende de"| APP
-    APP ==>|"depende de"| DOM
-    INF -.->|"implementan los puertos"| PTOS
-
-    style DOM fill:#e8f5e9,stroke:#2e7d32,stroke-width:4px
-    style PTOS fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
-    style PRE fill:#e3f2fd,stroke:#1565c0
-    style APP fill:#fff8e1,stroke:#f9a825
-    style INF fill:#fce4ec,stroke:#c2185b
-```
+<sub>Fuente editable: [`diagramas/1-capas.mmd`](diagramas/1-capas.mmd)</sub>
 
 **Todas las flechas apuntan hacia adentro.** El dominio no tiene ninguna saliente: es el único
 paquete del proyecto sin una sola dependencia externa. Y no hay atajos: presentación **no salta**
@@ -88,75 +53,9 @@ Es también lo que hace que las pruebas sean baratas: el mismo contrato lo cumpl
 
 ## 4. Modelo de dominio
 
-```mermaid
-classDiagram
-    class Solicitante {
-        +SolicitanteId id
-        +TipoUsuario tipoUsuario
-        -SueldoBase sueldoBaseVigente
-        +capturarSueldoBase()
-        +actualizarSueldoBase()
-        +politicaPrestamo() PoliticaPrestamo
-    }
+![Modelo de dominio](diagramas/2-modelo-de-dominio.png)
 
-    class SolicitudPrestamo {
-        <<raiz del agregado>>
-        +SolicitanteId solicitanteId
-        +number anio
-        +number version
-        +agregar(solicitudes, politica, hoy)
-        +montoTotalVigente(politica)
-    }
-
-    class PeriodoSolicitado {
-        +Monto montoCapturado
-        +FechaCivil fechaSolicitud
-        +montoVigente(politica) Monto
-        +estadoDeEntrega(hoy) EstadoEntrega
-    }
-
-    class PeriodoSolicitable {
-        <<interface>>
-        +validarQuePuedeSolicitarse(hoy)
-        +montoSegun(politica, monto) Monto
-    }
-
-    class Bimestre {
-        +MesReferencia mesReferencia
-        +estaBloqueado(hoy) bool
-        +temporadaCerrada(anio, hoy) bool
-    }
-
-    class PeriodoDiciembre {
-        +estaBloqueado(hoy) bool
-    }
-
-    class PoliticaPrestamo {
-        <<interface>>
-        +montoParaBimestre(capturado) Monto
-        +tieneDerechoADiciembre() bool
-        +montoParaDiciembre() Monto
-    }
-
-    class PoliticaPrestamoAlumno {
-        +Monto MONTO_MINIMO_POR_BIMESTRE
-        +Monto MONTO_MAXIMO_POR_BIMESTRE
-    }
-
-    class PoliticaPrestamoTrabajador {
-        +Porcentaje PORCENTAJE_POR_BIMESTRE
-        +Porcentaje PORCENTAJE_DICIEMBRE
-    }
-
-    Solicitante --> PoliticaPrestamo : entrega la suya
-    SolicitudPrestamo "1" *-- "0..6" PeriodoSolicitado
-    PeriodoSolicitado --> PeriodoSolicitable
-    PeriodoSolicitable <|.. Bimestre
-    PeriodoSolicitable <|.. PeriodoDiciembre
-    PoliticaPrestamo <|.. PoliticaPrestamoAlumno
-    PoliticaPrestamo <|.. PoliticaPrestamoTrabajador
-    PeriodoSolicitable ..> PoliticaPrestamo : delega el monto
-```
+<sub>Fuente editable: [`diagramas/2-modelo-de-dominio.mmd`](diagramas/2-modelo-de-dominio.mmd)</sub>
 
 `TipoUsuario` es **inmutable** tras el alta, y `montoCapturado` es **nulo para el trabajador**:
 su monto no se guarda, se deriva. Los límites del alumno son $0.01 y $3,500.00 **por bimestre**;
@@ -172,42 +71,9 @@ políticas (principio Abierto/Cerrado).
 
 `POST /solicitudes/bimestres` — el botón **"Solicitar"** del planteamiento:
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor U as Cliente
-    participant G as Guards
-    participant C as SolicitudesController
-    participant H as SolicitarBimestresHandler
-    participant L as CargadorDelRegistro
-    participant R as Repositorios
-    participant A as SolicitudPrestamo
-    participant P as PoliticaPrestamo
+![Flujo de POST /solicitudes/bimestres](diagramas/3-flujo-de-una-peticion.png)
 
-    U->>G: POST + Bearer token
-    G->>G: verifica firma y rol
-    G->>C: request.user = id + tipoUsuario
-    C->>C: ValidationPipe valida FORMA del DTO
-    C->>H: SolicitarBimestresCommand
-    H->>L: cargar(solicitanteId)
-    L->>R: buscar solicitante y registro del año
-    R-->>L: Solicitante + SolicitudPrestamo
-    L-->>H: hoy + solicitante + solicitud
-    H->>P: solicitante.politicaPrestamo()
-    H->>A: agregar(periodos, politica, hoy)
-    A->>A: fase 1 · valida TODO el lote
-    A->>P: monto de cada periodo
-    A->>A: calendario · idempotencia · conflictos
-    A->>A: fase 2 · aplica, ya no puede fallar
-    A-->>H: agregados + sinCambios
-    alt se agregó algo
-        H->>R: guardar (transacción + bloqueo optimista)
-    else nada nuevo
-        Note over H,R: no se escribe: evita avanzar la versión<br/>y provocar conflictos artificiales
-    end
-    H-->>C: modelo de lectura
-    C-->>U: 200 + estado actual del registro
-```
+<sub>Fuente editable: [`diagramas/3-flujo-de-una-peticion.mmd`](diagramas/3-flujo-de-una-peticion.mmd)</sub>
 
 Si algo falla, el error de dominio **sube sin tocarse** hasta el `DomainExceptionFilter`, que
 lo traduce a HTTP por su código estable. La aplicación no convierte errores; la presentación no
@@ -240,37 +106,9 @@ arquitectura: que casi ninguna regla dependa del framework.
 
 ## 7. Modelo de datos
 
-```mermaid
-erDiagram
-    solicitantes ||--o| credenciales : "tiene"
-    solicitantes ||--o{ solicitudes_prestamo : "abre una por año"
-    solicitudes_prestamo ||--o{ periodos_solicitados : "acumula"
+![Modelo de datos](diagramas/4-modelo-de-datos.png)
 
-    solicitantes {
-        uuid id PK
-        enum tipo_usuario "alumno o trabajador"
-        numeric sueldo_base "nullable, CHECK positivo"
-    }
-    credenciales {
-        varchar correo PK
-        uuid solicitante_id FK "UNIQUE"
-        varchar hash_contrasena "scrypt-sal-derivada"
-    }
-    solicitudes_prestamo {
-        uuid id PK
-        uuid solicitante_id FK
-        int anio
-        int version "bloqueo optimista"
-    }
-    periodos_solicitados {
-        uuid id PK
-        uuid solicitud_id FK
-        enum tipo "bimestre o diciembre"
-        int mes_referencia "CHECK 2,4,6,8,10,12"
-        numeric monto_capturado "nullable · sólo alumno"
-        date fecha_solicitud
-    }
-```
+<sub>Fuente editable: [`diagramas/4-modelo-de-datos.mmd`](diagramas/4-modelo-de-datos.mmd)</sub>
 
 Dos detalles que el esquema hace cumplir y conviene señalar en la defensa:
 
@@ -289,23 +127,9 @@ Dos detalles que el esquema hace cumplir y conviene señalar en la defensa:
 
 ## 9. Estrategia de pruebas
 
-```mermaid
-flowchart LR
-    U["226 unitarias<br/>npm test<br/>sin base de datos"] --> UD["Dominio: reglas, calendario,<br/>dinero, invariantes"]
-    U --> UA["Aplicación: casos de uso<br/>con dobles en memoria"]
-    U --> UP["Presentación: mapeo de errores<br/>y validación de DTOs"]
-    U --> UI["Infraestructura: scrypt, JWT,<br/>config, mappers"]
+![Estrategia de pruebas](diagramas/5-estrategia-de-pruebas.png)
 
-    I["14 de integración<br/>npm run test:int<br/>PostgreSQL real"] --> IC["Bloqueo optimista<br/>ante escrituras simultáneas"]
-    I --> IM["Mapeo ORM ↔ dominio<br/>y restricciones de la migración"]
-
-    B["35 peticiones Bruno<br/>API completa por HTTP"] --> BF["Casos felices"]
-    B --> BE["Todos los escenarios<br/>de error del catálogo"]
-
-    style U fill:#e8f5e9,stroke:#2e7d32
-    style I fill:#fff8e1,stroke:#f9a825
-    style B fill:#e3f2fd,stroke:#1565c0
-```
+<sub>Fuente editable: [`diagramas/5-estrategia-de-pruebas.mmd`](diagramas/5-estrategia-de-pruebas.mmd)</sub>
 
 El reparto no es casual: **si una regla de negocio necesitara PostgreSQL para probarse, estaría
 mal ubicada.** Las de integración existen sólo para lo que un doble no puede demostrar —que dos

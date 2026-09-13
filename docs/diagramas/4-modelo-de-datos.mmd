@@ -1,0 +1,29 @@
+erDiagram
+    solicitantes ||--o| credenciales : "tiene"
+    solicitantes ||--o{ solicitudes_prestamo : "abre una por año"
+    solicitudes_prestamo ||--o{ periodos_solicitados : "acumula"
+
+    solicitantes {
+        uuid id PK
+        enum tipo_usuario "alumno o trabajador"
+        numeric sueldo_base "nullable, CHECK positivo"
+    }
+    credenciales {
+        varchar correo PK
+        uuid solicitante_id FK "UNIQUE"
+        varchar hash_contrasena "scrypt-sal-derivada"
+    }
+    solicitudes_prestamo {
+        uuid id PK
+        uuid solicitante_id FK
+        int anio
+        int version "bloqueo optimista"
+    }
+    periodos_solicitados {
+        uuid id PK
+        uuid solicitud_id FK
+        enum tipo "bimestre o diciembre"
+        int mes_referencia "CHECK 2,4,6,8,10,12"
+        numeric monto_capturado "nullable · sólo alumno"
+        date fecha_solicitud
+    }

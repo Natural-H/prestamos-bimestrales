@@ -1,0 +1,15 @@
+flowchart LR
+    U["226 unitarias<br/>npm test<br/>sin base de datos"] --> UD["Dominio: reglas, calendario,<br/>dinero, invariantes"]
+    U --> UA["Aplicación: casos de uso<br/>con dobles en memoria"]
+    U --> UP["Presentación: mapeo de errores<br/>y validación de DTOs"]
+    U --> UI["Infraestructura: scrypt, JWT,<br/>config, mappers"]
+
+    I["14 de integración<br/>npm run test:int<br/>PostgreSQL real"] --> IC["Bloqueo optimista<br/>ante escrituras simultáneas"]
+    I --> IM["Mapeo ORM ↔ dominio<br/>y restricciones de la migración"]
+
+    B["35 peticiones Bruno<br/>API completa por HTTP"] --> BF["Casos felices"]
+    B --> BE["Todos los escenarios<br/>de error del catálogo"]
+
+    style U fill:#e8f5e9,stroke:#2e7d32
+    style I fill:#fff8e1,stroke:#f9a825
+    style B fill:#e3f2fd,stroke:#1565c0

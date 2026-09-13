@@ -1,0 +1,67 @@
+classDiagram
+    class Solicitante {
+        +SolicitanteId id
+        +TipoUsuario tipoUsuario
+        -SueldoBase sueldoBaseVigente
+        +capturarSueldoBase()
+        +actualizarSueldoBase()
+        +politicaPrestamo() PoliticaPrestamo
+    }
+
+    class SolicitudPrestamo {
+        <<raiz del agregado>>
+        +SolicitanteId solicitanteId
+        +number anio
+        +number version
+        +agregar(solicitudes, politica, hoy)
+        +montoTotalVigente(politica)
+    }
+
+    class PeriodoSolicitado {
+        +Monto montoCapturado
+        +FechaCivil fechaSolicitud
+        +montoVigente(politica) Monto
+        +estadoDeEntrega(hoy) EstadoEntrega
+    }
+
+    class PeriodoSolicitable {
+        <<interface>>
+        +validarQuePuedeSolicitarse(hoy)
+        +montoSegun(politica, monto) Monto
+    }
+
+    class Bimestre {
+        +MesReferencia mesReferencia
+        +estaBloqueado(hoy) bool
+        +temporadaCerrada(anio, hoy) bool
+    }
+
+    class PeriodoDiciembre {
+        +estaBloqueado(hoy) bool
+    }
+
+    class PoliticaPrestamo {
+        <<interface>>
+        +montoParaBimestre(capturado) Monto
+        +tieneDerechoADiciembre() bool
+        +montoParaDiciembre() Monto
+    }
+
+    class PoliticaPrestamoAlumno {
+        +Monto MONTO_MINIMO_POR_BIMESTRE
+        +Monto MONTO_MAXIMO_POR_BIMESTRE
+    }
+
+    class PoliticaPrestamoTrabajador {
+        +Porcentaje PORCENTAJE_POR_BIMESTRE
+        +Porcentaje PORCENTAJE_DICIEMBRE
+    }
+
+    Solicitante --> PoliticaPrestamo : entrega la suya
+    SolicitudPrestamo "1" *-- "0..6" PeriodoSolicitado
+    PeriodoSolicitado --> PeriodoSolicitable
+    PeriodoSolicitable <|.. Bimestre
+    PeriodoSolicitable <|.. PeriodoDiciembre
+    PoliticaPrestamo <|.. PoliticaPrestamoAlumno
+    PoliticaPrestamo <|.. PoliticaPrestamoTrabajador
+    PeriodoSolicitable ..> PoliticaPrestamo : delega el monto

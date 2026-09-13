@@ -6,3 +6,6 @@ coverage/
 # Configuración real: solo se versiona .env.example (CLAUDE.md §11)
 .env
 .env.local
+
+# Lo genera scripts/generar-diagramas.js en cada ejecucion
+docs/diagramas/.puppeteer.json
