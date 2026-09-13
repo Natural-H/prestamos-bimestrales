@@ -1,0 +1,3 @@
+# Normaliza los finales de linea a LF, como exige .prettierrc (endOfLine: lf).
+# Sin esto, Git y Prettier se pelean en cada commit hecho desde Windows.
+* text=auto eol=lf

@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+*.log
+
+# Configuración real: solo se versiona .env.example (CLAUDE.md §11)
+.env
+.env.local
