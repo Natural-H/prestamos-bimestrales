@@ -49,7 +49,27 @@ npm run db:up     # Levanta PostgreSQL 18
 npm run db:down   # Lo apaga
 npm run migration:run / migration:revert / migration:generate
 npm run seed      # Datos de prueba (idempotente)
+npm run respaldo  # git bundle fechado con todo el historial (ver abajo)
+npm run docs:diagramas  # Regenera las imágenes de docs/diagramas/
 ```
+
+### Respaldo sin internet
+
+El proyecto no se sube a ningún servidor, así que el respaldo es un **`git bundle`**: un solo
+archivo con todo el historial, que se copia a una USB y del que se clona como si fuera un
+remoto.
+
+```bash
+npm run respaldo
+# → ../prestamos-bimestrales-AAAAMMDD.bundle, verificado
+
+# restaurarlo en otra máquina:
+git clone prestamos-bimestrales-AAAAMMDD.bundle prestamos-bimestrales
+```
+
+El bundle pesa menos de 1 MB, pero **no incluye `node_modules` (402 MB) ni el `.env`**, que no
+están versionados. Para levantar el proyecto en una máquina sin internet hay que llevar también
+esas dependencias y un `docker save postgres:18`.
 
 ### Pruebas de integración
 
