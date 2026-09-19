@@ -26,7 +26,7 @@
   languages.javascript = {
     enable = true;
     nodejs.enable = true;
-    pnpm = {
+    npm = {
       enable = true;
       install.enable = true;
     };
@@ -46,7 +46,7 @@
   };
 
   tasks."db:setup-schema" = {
-    exec = "pnpm run migration:run";
+    exec = "npm run migration:run";
 
     env = {
       DB_PORT = toString config.processes.postgres.ports.main.value;
@@ -54,7 +54,7 @@
   };
 
   tasks."db:setup-data" = {
-    exec = "pnpm run seed";
+    exec = "npm run seed";
     after = ["db:setup-schema"];
 
     env = {
@@ -73,6 +73,6 @@
   };
 
   enterTest = ''
-    pnpm run test
+    npm run test
   '';
 }
