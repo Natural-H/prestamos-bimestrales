@@ -7,13 +7,20 @@
 }: {
   env = {
     NODE_ENV = "development";
+    DB_HOST = "localhost";
+    DB_PORT = "5432";
+
+    DB_NAME = config.secretspec.secrets.DB_NAME;
+    DB_USER = config.secretspec.secrets.DB_USER;
+    DB_PASSWORD = config.secretspec.secrets.DB_PASSWORD;
   };
 
-  dotenv.enable = true;
+  devcontainer.enable = true;
 
   packages = [
     pkgs.git
     pkgs.nest-cli
+    pkgs.postgresql
   ];
 
   languages.javascript = {
@@ -38,8 +45,17 @@
     ];
   };
 
+  tasks."db:setup-schema" = {
+    exec = "pnpm run migration:run";
+  };
+
+  tasks."db:setup-data" = {
+    exec = "pnpm run seed";
+    after = ["db:setup-schema"];
+  };
+
   processes.api = {
-    exec = "pnpm run start:dev";
+    exec = "secretspec run -- pnpm run start:dev";
     ports.main.allocate = 3000;
 
     env = {
@@ -48,17 +64,7 @@
     };
   };
 
-  scripts.hello.exec = ''
-    echo hello from $GREET
-  '';
-
-  enterShell = ''
-  '';
-
   enterTest = ''
-    echo "Running tests"
-    git --version | grep --color=auto "${pkgs.git.version}"
+    pnpm run test
   '';
-
-  # git-hooks.hooks.shellcheck.enable = true;
 }
