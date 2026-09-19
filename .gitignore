@@ -9,3 +9,14 @@ coverage/
 
 # Lo genera scripts/generar-diagramas.js en cada ejecucion
 docs/diagramas/.puppeteer.json
+
+# Devenv
+.devenv*
+devenv.local.nix
+devenv.local.yaml
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
