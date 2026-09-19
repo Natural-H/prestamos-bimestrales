@@ -28,6 +28,22 @@ npm run start:dev           # API en http://localhost:3000
 > local en el puerto estándar. `DB_PORT` del `.env` fija a la vez el puerto publicado y el
 > que usa la API, así que basta cambiarlo ahí.
 
+### Usuarios de Nix
+
+Devenv puede levantar un entorno de desarollo de la siguiente forma:
+
+```bash
+nix shell nixpkgs#devenv --command devenv shell
+secretspec check        #configura los secretos
+devenv up -d            #levanta los servicios (api y base de datos)
+devenv tasks run db     #usuarios de prueba
+devenv processes list   #muestra los servicios activos y puertos usados
+```
+
+Pueden configurarse otras variables de entorno o añadirse más dentro de `devenv.nix`.
+
+Para reinciar el estado de la base de datos, debemos borrar la carpeta `.devenv/state/postgres`.
+
 **Usuarios del seed** (contraseña `prestamos2026`):
 
 | Correo | Para qué sirve |

@@ -47,11 +47,19 @@
 
   tasks."db:setup-schema" = {
     exec = "pnpm run migration:run";
+
+    env = {
+      DB_PORT = toString config.processes.postgres.ports.main.value;
+    };
   };
 
   tasks."db:setup-data" = {
     exec = "pnpm run seed";
     after = ["db:setup-schema"];
+
+    env = {
+      DB_PORT = toString config.processes.postgres.ports.main.value;
+    };
   };
 
   processes.api = {
